@@ -9,7 +9,7 @@ if (!$conn) {
 } 
 ?>
 
-    <div class="label">Select Author:</div>
+    <div class="label">Select Process:</div>
 
     <select name="names">
     <option value = "">---Select---</option>
@@ -17,7 +17,7 @@ if (!$conn) {
     $queryusers = "SELECT `PROCESS_DESC` FROM `steps_ID` ";
     $conn = mysqli_query($conn, $queryusers);
     while ( $d=mysqli_fetch_assoc($conn)) {
-      echo "<option value='{".$d['author']."}'>".$d['author']."</option>";
+      echo "<option value='{".$d['PROCESS_DESC']."}'>".$d['PROCESS_DESC']."</option>";
     }
     ?>
       </select>  

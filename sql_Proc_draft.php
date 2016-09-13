@@ -22,33 +22,37 @@
       isset($_POST['DETAILS'])     &&
       isset($_POST['PROCESS_DESC']))
   {
-    $subsize   = get_post($conn, 'SUB_DIM');
-    $tool    = get_post($conn, 'TOOL');
-    $recipe = get_post($conn, 'REIPE');
-    $details     = get_post($conn, 'DETAILS');
-    $procdesc     = get_post($conn, 'PROCESS_DESC');
+    $subsize   		= get_post($conn, 'SUB_DIM');
+    $tool    		= get_post($conn, 'TOOL');
+    $recipe 		= get_post($conn, 'RECIPE');
+    $details     	= get_post($conn, 'DETAILS');
+	$prompt			= get_post($conn, 'PROMPT');
+    $procdesc		= get_post($conn, 'PROCESS_DESC');
+	$filmthickness	= get_post($conn, 'FILM_THICKNESS');
+	$location		= get_post($conn, 'LOCATION');
+	$maskid			= get_post($conn, 'MASK_ID');
     $query    = "INSERT INTO steps_ID VALUES" .
-      "('$subsize', '$tool', '$recipe', '$details', '$procdesc')";
+      "('$subsize', '$tool', '$recipe', '$details', '$prompt', '$procdesc', '$filmthickness', '$location', '$maskid', DEFAULT)";
     $result   = $conn->query($query);
 
   	if (!$result) echo "INSERT failed: $query<br>" .
       $conn->error . "<br><br>";
   }
-
+//--------------------------------------------------------//
+///////					THE FORM				///////
   echo 
   <<<_END
   <form action="sql_PROC_draft.php" method="post">
   <pre>
-  
   Process Description 		<input type="text" name="PROCESS_DESC">
-
-  Details 				<input type="text" name="DETAILS">
-
+  Details 			<input type="text" name="DETAILS">
   Tool 				<input type="text" name="TOOL">
-
-  Recipe				<input type="text" name="RECIPE">
-
-  Prompt 				<input type="text" name="PROMPT">
+  Recipe			<input type="text" name="RECIPE">
+  Prompt 			<input type="text" name="PROMPT">
+  Substrate Size		<input type="text" name="SUB_DIM">
+  Film Thickness		<input type="text" name="FILM_THICKNESS">
+  Location			<input type="text" name="LOCATION">
+  MASK ID			<input type="text" name="MASK_ID">
 
   <input type="submit" value="ADD RECORD">
 
@@ -61,37 +65,50 @@ _END;
   $result = $conn->query($query);
   if (!$result) die ("Database access failed: " . $conn->error);
 
-  $rows = $result->num_rows;
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
+///////				THE REPEATING OUTPUT SETUP			///////
   
+  $rows = $result->num_rows;
+  echo "<table><tr><th>Step ID</th><th>Process Description</th><th>Tool</th><th>Recipe</th><th>Details</th></tr>";
+
   for ($j = 0 ; $j < $rows ; ++$j)
   {
     $result->data_seek($j);
-    $row = $result->fetch_array(MYSQLI_ASSOC);
+  	$row = $result->fetch_array(MYSQLI_ASSOC);
 
+  	echo "<tr>";
+  	//for ($k = 0 ; $k < 10 ; ++$k) 
+	echo "<td>$row[STEP_ID]</td><td>$row[PROCESS_DESC]</td><td>$row[TOOL]</td><td>$row[RECIPE]</td><td>$row[DETAILS]</td>
+	<td><form action=\"sql_Proc_draft.php\" method=\"post\">
+	<input type=\"hidden\" name=\"delete\" value=\"yes\">
+	<input type=\"hidden\" name=\"PROCESS_DESC\" value=\"$row[PROCESS_DESC]\">
+	<input type=\"submit\" value=\"DELETE RECORD\"></form></td>";
+  	
+	echo "</tr>";
+  }
+
+  echo "</table>";
+	  
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
+///////						THE OUTPUT					///////
+/*	
 	echo <<<_END
 	
-	<pre>
-	
-<table>
+	Process: $row[PROCESS_DESC] <br>
+	Sub Size: $row[SUB_DIM] <br>
+	Tool: $row[TOOL] <br>
+	Recipe: $row[RECIPE] <br>
+	Details: $row[DETAILS]
 
-<tr> Process: $row[PROCESS_DESC] </tr>
-Sub Size: $row[SUB_DIM]
-Tool: $row[TOOL]
-Recipe: $row[RECIPE]
-Details: $row[DETAILS]
+	<form action="sql_Proc_draft.php" method="post">
+	<input type="hidden" name="delete" value="yes">
+	<input type="hidden" name="PROCESS_DESC" value="$row[PROCESS_DESC]">
+	<input type="submit" value="DELETE RECORD"></form>
   
-  </pre>
-  
-  <form action="sql_Proc_draft.php" method="post">
-  <input type="hidden" name="delete" value="yes">
-  <input type="hidden" name="PROCESS_DESC" value="$row[PROCESS_DESC]">
-  <input type="submit" value="DELETE RECORD"></form>
-  
-</table>
-
 _END;
-  }
-  
+*/
+
+
   $result->close();   		 //	 	returns memory
   $conn->close();			 // 		returns memory
   
