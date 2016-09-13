@@ -65,11 +65,28 @@ _END;
   $result = $conn->query($query);
   if (!$result) die ("Database access failed: " . $conn->error);
 
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
+?>
+
+  <select name="names">
+  <option value = "">---Select---</option>
+
+  <?php
+  $queryusers = "SELECT DISTINCT `PROCESS_DESC` FROM `steps_ID` ";
+  $conn = mysqli_query($conn, $queryusers);
+  while ( $d=mysqli_fetch_assoc($conn)) {
+  echo "<option value='{".$d['PROCESS_DESC']."}'>".$d['PROCESS_DESC']."</option>";
+  echo 'names';
+  }?>
+  
+</select>    
+
+<?php
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-//
 ///////				THE REPEATING OUTPUT SETUP			///////
   
   $rows = $result->num_rows;
-  echo "<table><tr><th>Step ID</th><th>Process Description</th><th>Tool</th><th>Recipe</th><th>Details</th></tr>";
+  echo "<br><br><table><tr><th>Step ID</th><th>Process Description</th><th>Tool</th><th>Recipe</th><th>Details</th></tr>";
 
   for ($j = 0 ; $j < $rows ; ++$j)
   {
@@ -86,7 +103,6 @@ _END;
   	
 	echo "</tr>";
   }
-
   echo "</table>";
 	  
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
