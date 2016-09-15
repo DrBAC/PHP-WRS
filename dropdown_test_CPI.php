@@ -1,23 +1,26 @@
 <?php
+
 include ("login_CPI.php");
 
-$conn = new mysqli($hn, $un, $pw, $db);
+$link = mysqli_connect($hn, $un, $pw, $db);
 
-if (!$conn) {
-  exit('Connect Error (' . mysqli_connect_errno() . ') '
-       . mysqli_connect_error());
-} 
-?>
+	if (mysqli_connect_errno()) die(mysqli_connect_error());
 
-    <div class="label">Select Process:</div>
+	$result_1 = mysqli_query($link, "SELECT DISTINCT`PROCESS_DESC` FROM `steps_ID`");
 
-    <select name="names">
-    <option value = "">---Select---</option>
-    <?php
-    $queryusers = "SELECT `PROCESS_DESC` FROM `steps_ID` ";
-    $conn = mysqli_query($conn, $queryusers);
-    while ( $d=mysqli_fetch_assoc($conn)) {
-      echo "<option value='{".$d['PROCESS_DESC']."}'>".$d['PROCESS_DESC']."</option>";
-    }
-    ?>
-      </select>  
+	echo	"<div class=\"label\">Select Process:</div>";
+	echo	"<select name=\"names\">";
+	echo	"<option value = \"\">---Select---</option>";
+	while ( $d=mysqli_fetch_assoc($result_1)) 
+	{
+		$procdesc = $d['PROCESS_DESC'];
+		echo "<option value='{".$d['PROCESS_DESC']."}'>".$d['PROCESS_DESC']."</option>";
+		}
+
+	echo	"</select>";
+
+	echo $procdesc;
+	
+	?>
+	
+       
