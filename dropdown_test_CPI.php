@@ -11,97 +11,83 @@ if (mysqli_connect_errno()) die(mysqli_connect_error());
 
 $result = mysqli_query($link, "SELECT DISTINCT PROCESS_DESC FROM steps_ID");
 
-
-
 // ---------------------------------------------------------------------------------------------------------------- //
 
 				//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//
 				//   set up form, including drop-down box and Search Button   //
 				//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//-//
 
-echo
-
-<<<_END
-
+//Because you can close and open php tags when you want it's usually easier to just write the html and do php when you need.
+?>
 <form action="dropdown_test_CPI.php" method="post">
-
-<div class=\"label\">	Select Process:	</div>
-
-<select name="Process">
-
-<option value = "">		---Select---	</option>
-
-_END;
-
-while($d=mysqli_fetch_assoc($result)) 
-	{
-		$procdesc = $d['PROCESS_DESC'];
-		echo "<option value='{".$d['PROCESS_DESC']."}'>".$d['PROCESS_DESC']."</option>";
-	}
-
-echo
-
-<<<_END
-
-</select>
-	
-<input type="submit" value=Search>
-
+    <label for="process">Select Process:</label>
+    <select name="process">
+        <option value="">		---Select---	</option>
+        <?php
+            while ($d=mysqli_fetch_assoc($result)) {
+                $procdesc = $d['PROCESS_DESC'];
+        ?>
+        <option value='<?=$procdesc;//This just means <?php echo ?>'><?=$procdesc;?></option>
+        <?php
+            }
+        ?>
+    </select>
+    <input type="submit" value=Search>
 </form>
-
-_END;
+<?php
 
 // ---------------------------------------------------------------------------------------------------------------- //
 
-if (isset($_POST['Process']))			//sees if form was used (selection - press search)
-{
-	$choice = trim(strip_tags($_POST['Process']));
+if (isset($_POST['process'])) {		//sees if form was used (selection - press search)
+
+	$choice = mysqli_real_escape_string($link, trim(strip_tags($_POST['process']))); //This is important to stop injection attacks.
 	
 	$response = mysqli_query($link, "SELECT * FROM steps_ID WHERE PROCESS_DESC = '$choice'");
 	
-//	$rows = $response->num_rows;
+    //	$rows = $response->num_rows;
 
-// create table header
-	 
-echo
-<<<_TABHEAD
+    // create table header
 
-	<br>
-	<table>
-	<tr>
-	<th>Step ID</th>
-	<th>Process Description</th>
-	<th>Tool</th>
-	<th>Recipe</th>
-	<th>Details</th>
-	</tr>
+    ?>
 
-_TABHEAD;
- 
-//	for ($j = 0 ; $j < $rows ; ++$j)
+    <br>
+    <table>
+        <thead>
+            <tr>
+                <th>Step ID</th>
+                <th>Process Description</th>
+                <th>Tool</th>
+                <th>Recipe</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php
 
-//		$response->data_seek($j);
+    //	for ($j = 0 ; $j < $rows ; ++$j)
 
-//		$row = $response->fetch_array(MYSQLI_ASSOC);
+    //		$response->data_seek($j);
 
-while($row = mysqli_fetch_array($response, MYSQLI_BOTH))
-{
-	echo "<tr>";
-	echo "<td>" . $row['STEP_ID'] . "</td>";
-	echo "<td>" . $row['PROCESS_DESC'] . "</td>";
-	echo "<td>" . $row['TOOL'] . "</td>";
-	echo "<td>" . $row['RECIPE'] . "</td>";
-	echo "<td>" . $row['DETAILS'] . "</td>";
-	echo "<td></form></td>";
-  	
-	echo "</tr>";
-	}
-	echo "</table>";
-	
-//	mysqli_free_result($response);
-	
-	 echo "$choice";
-	//echo $response;
- }
+    //		$row = $response->fetch_array(MYSQLI_ASSOC);
 
+        while($row = mysqli_fetch_array($response, MYSQLI_ASSOC)) {
+    ?>
+        <tr>
+            <td><?=$row['STEP_ID'];?></td>
+            <td><?=$row['PROCESS_DESC'];?></td>
+            <td><?=$row['TOOL'];?></td>
+            <td><?=$row['RECIPE'];?></td>
+            <td><?=$row['DETAILS'];?></td>
+        </tr>
+    <?php
+        } //endwhile
+    ?>
+        </tbody>
+    </table>
+<?php
+    //	mysqli_free_result($response);
+
+         echo "$choice";
+        //echo $response;
+} //endif
 ?>
