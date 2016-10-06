@@ -64,8 +64,7 @@
   <<<_END
   <form action="sql_PROC_draft.php" method="post">
   <pre>
-  Process Description 		<input type="text" name="PROCESS_DESC">
-  Details 			<input type="text" name="DETAILS">
+  Process Description 		<input type="text" name="PROCESS_DESC"> Details 			<input type="text" name="DETAILS">
   Tool 				<input type="text" name="TOOL">
   Recipe			<input type="text" name="RECIPE">
   Prompt 			<input type="text" name="PROMPT">
